@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 
 // Función asincrónica para conectar a la base de datos MongoDB
 const conectarDB = async () => {
-    try {
 
+    try {
         // Utiliza el método 'connect' de mongoose para conectarse a la base de datos MongoDB
         await mongoose.connect(process.env.MONGO_URI, {
             writeConcern: 'majority',

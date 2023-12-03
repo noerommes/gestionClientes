@@ -6,6 +6,7 @@ import clienteRoutes from './routes/clienteRoutes.js';
 // Crea una instancia de la aplicación express
 const app = express();
 
+// Habilita el uso de JSON en las solicitudes y respuestas
 app.use(express.json());
 
 // Configura la aplicación para cargar las variables de entorno desde un archivo '.env'
