@@ -1,4 +1,4 @@
-import Cliente from "../models/Cliente.js";
+import Veterinario from "../models/Veterinario.js";
 import generarJWT from "../helpers/generarJWT.js";
 import {randomUUID} from 'crypto';
 
@@ -9,7 +9,7 @@ const registrar = async (req, res) => {
     const { email } = req.body;
 
     // Prevenir usuarios duplicados consultando la base de datos
-    const existeUsuario = await Cliente.findOne({ email });
+    const existeUsuario = await Veterinario.findOne({ email });
 
     // Si el usuario ya existe, devolver un error
     if (existeUsuario) {
@@ -19,11 +19,11 @@ const registrar = async (req, res) => {
 
     try {
         // Guardar un nuevo cliente utilizando el modelo Cliente
-        const cliente = new Cliente(req.body);
+        const veterinario = new Veterinario(req.body);
         // Con 'await', la ejecución se bloquea hasta que se complete la operación de guardado
-        const clienteGuardado = await cliente.save();
+        const veterinarioGuardado = await veterinario.save();
         // Responder con el cliente recién guardado en formato JSON
-        res.json(clienteGuardado);
+        res.json(veterinarioGuardado);
     } catch (error) {
         console.log(error);
     }
@@ -36,7 +36,7 @@ const confirmar = async (req, res) => {
     const { token } = req.params;
 
     // Buscar un usuario por el token en la base de datos
-    const usuarioConfirmar = await Cliente.findOne({ token });
+    const usuarioConfirmar = await Veterinario.findOne({ token });
     console.log('Usuario encontrado:', usuarioConfirmar);
 
     // Si no se encuentra el usuario, devolver un error
@@ -67,7 +67,7 @@ const autenticar = async (req, res) => {
     const { email, password } = req.body;
 
     // Comprobar si existe un usuario con el correo electrónico proporcionado
-    const usuario = await Cliente.findOne({ email });
+    const usuario = await Veterinario.findOne({ email });
 
     // Si no existe el usuario, devolver un error
     if (!usuario) {
@@ -107,7 +107,7 @@ const olvidePassword = async (req, res) => {
     const { email } = req.body;
 
     // Comprobar si existe un usuario con el correo electrónico proporcionado
-    const existeUsuario = await Cliente.findOne({ email });
+    const existeUsuario = await Veterinario.findOne({ email });
 
     // Si no existe el usuario, devolver un error
     if (!existeUsuario) {
@@ -133,7 +133,7 @@ const comprobarToken = async (req, res) => {
     const { token } = req.params;
 
     // Buscar un usuario por el token en la base de datos
-    const usuarioToken = await Cliente.findOne({ token });
+    const usuarioToken = await Veterinario.findOne({ token });
 
     // Si se encuentra el usuario, responder con un mensaje indicando que el token es válido
     if (usuarioToken) {
@@ -153,20 +153,20 @@ const nuevoPassword = async (req, res) => {
     const { password } = req.body;
 
     // Buscar un usuario por el token en la base de datos
-    const cliente = await Cliente.findOne({ token });
+    const veterinario = await Veterinario.findOne({ token });
 
     // Si no se encuentra el usuario, devolver un error
-    if (!cliente) {
+    if (!veterinario) {
         const error = new Error('Hubo un error.');
         return res.status(404).json({ msg: error.message });
     }
 
     try {
         // Actualizar propiedades del usuario para establecer la nueva contraseña
-        cliente.token = null;
-        cliente.password = password;
+        veterinario.token = null;
+        veterinario.password = password;
         // Con 'await', la ejecución se bloquea hasta que se complete la operación de guardado
-        await cliente.save();
+        await veterinario.save();
         // Responder con un mensaje indicando que la contraseña se ha modificado correctamente
         res.json({ msg: 'Password modificada correctamente.' });
     } catch (error) {

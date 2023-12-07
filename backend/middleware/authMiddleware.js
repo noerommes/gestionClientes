@@ -1,5 +1,5 @@
 import  jwt from "jsonwebtoken";
-import Cliente from "../models/Cliente.js";
+import Veterinario from "../models/Veterinario.js";
 
 // Definición del middleware 'checkAuth'
 const checkAuth = async (req, res, next) => {
@@ -14,7 +14,7 @@ const checkAuth = async (req, res, next) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
             // Busca al cliente en la base de datos utilizando el ID decodificado del token
-            req.cliente = await Cliente.findById(decoded.id).select(
+            req.veterinario = await Veterinario.findById(decoded.id).select(
                 "-password -token -confirmado"
             );
         } catch (error) {

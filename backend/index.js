@@ -1,7 +1,8 @@
 import express from "express";
 import dotenv from 'dotenv';
 import conectarDB from './config/db.js';
-import clienteRoutes from './routes/clienteRoutes.js';
+import veterinarioRoutes from './routes/veterinarioRoutes.js';
+import pacienteRoutes from './routes/pacienteRoutes.js';
 
 // Crea una instancia de la aplicación express
 const app = express();
@@ -23,5 +24,8 @@ app.listen(PORT, () => {
     console.log(`Servidor funcionando en el puerto ${PORT}.`);
 });
 
-// Configura una ruta para manejar las solicitudes en '/api/clientes', utilizando las rutas definidas en 'clienteRoutes'
-app.use('/api/clientes', clienteRoutes);
+// Configura una ruta para manejar las solicitudes en '/api/veterinarios', utilizando las rutas definidas en 'veterinarioRoutes'
+app.use('/api/veterinarios', veterinarioRoutes);
+
+// Configura una ruta para manejar las solicitudes en '/api/paciente', utilizando las rutas definidas en 'pacienteRoutes'
+app.use('/api/pacientes', pacienteRoutes);

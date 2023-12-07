@@ -3,7 +3,7 @@ import {randomUUID} from 'crypto';
 import bcrypt from 'bcrypt';
 
 // Define el esquema de Mongoose para la entidad "Cliente"
-const clienteSchema = mongoose.Schema({
+const veterinarioSchema = mongoose.Schema({
     nombre:{
         type: String,
         required: true,
@@ -35,7 +35,7 @@ const clienteSchema = mongoose.Schema({
 });
 
 // Middleware pre-save para el modelo ClienteSchema en Mongoose
-clienteSchema.pre('save', async function(next) {
+veterinarioSchema.pre('save', async function(next) {
 
     // Verifica si la contraseña ha sido modificada antes de aplicar operaciones de hash
     if (!this.isModified('password')) {
@@ -55,12 +55,12 @@ clienteSchema.pre('save', async function(next) {
 });
 
 // Método personalizado para comprobar la contraseña del cliente
-clienteSchema.methods.comprobarPassword = async function (passwordFormulario) {
+veterinarioSchema.methods.comprobarPassword = async function (passwordFormulario) {
     // Utiliza bcrypt para comparar la contraseña proporcionada con la contraseña almacenada
     return await bcrypt.compare(passwordFormulario, this.password);
 };
 
 // Crea un modelo llamado "Cliente" utilizando el esquema definido anteriormente
-const Cliente = mongoose.model('Cliente', clienteSchema);
+const Veterinario = mongoose.model('Veterinario', veterinarioSchema);
 
-export default Cliente;
+export default Veterinario;
