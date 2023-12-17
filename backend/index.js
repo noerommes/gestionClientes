@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from 'dotenv';
+import cors from 'cors';
 import conectarDB from './config/db.js';
 import veterinarioRoutes from './routes/veterinarioRoutes.js';
 import pacienteRoutes from './routes/pacienteRoutes.js';
@@ -15,6 +16,20 @@ dotenv.config();
 
 // Llama a la función 'conectarDB' para establecer la conexión con la base de datos MongoDB
 conectarDB();
+
+const dominiosPermitidos = ['http://localhost:5173']
+
+const corsOption ={
+    origin: function(origin, callback){
+        if (dominiosPermitidos.indexOf(origin) !== -1 ) {
+            callback(null, true);
+        }else{
+            callback(new Error('No permitido por CORS'));
+        }
+    }
+}
+
+app.use(cors(corsOption));
 
 // Configura el puerto del servidor utilizando la variable de entorno 'PORT', o utiliza el puerto 4000 por defecto
 const PORT = process.env.PORT || 4000;

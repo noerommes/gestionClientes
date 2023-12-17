@@ -1,12 +1,13 @@
 import Veterinario from "../models/Veterinario.js";
 import generarJWT from "../helpers/generarJWT.js";
 import {randomUUID} from 'crypto';
+import emailRegistro from "../helpers/emailRegistro.js";
 
 // Definición de la función 'registrar', que maneja las solicitudes para la ruta '/api/clientes'
 const registrar = async (req, res) => {
 
     // Extraer el correo electrónico del cuerpo de la solicitud
-    const { email } = req.body;
+    const { email, nombre} = req.body;
 
     // Prevenir usuarios duplicados consultando la base de datos
     const existeUsuario = await Veterinario.findOne({ email });
@@ -22,6 +23,14 @@ const registrar = async (req, res) => {
         const veterinario = new Veterinario(req.body);
         // Con 'await', la ejecución se bloquea hasta que se complete la operación de guardado
         const veterinarioGuardado = await veterinario.save();
+
+        //Enviar el email.
+        emailRegistro({
+            email,
+            nombre,
+            token: veterinarioGuardado.token
+        });
+
         // Responder con el cliente recién guardado en formato JSON
         res.json(veterinarioGuardado);
     } catch (error) {
