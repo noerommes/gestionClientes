@@ -2,6 +2,7 @@ import Veterinario from "../models/Veterinario.js";
 import generarJWT from "../helpers/generarJWT.js";
 import {randomUUID} from 'crypto';
 import emailRegistro from "../helpers/emailRegistro.js";
+import emailOlvidePassword from "../helpers/emailOlvidePassword.js";
 
 // Definición de la función 'registrar', que maneja las solicitudes para la ruta '/api/clientes'
 const registrar = async (req, res) => {
@@ -69,50 +70,45 @@ const confirmar = async (req, res) => {
 };
 
 
-// Definición de la función 'autenticar', que maneja las solicitudes para la ruta '/login'
 const autenticar = async (req, res) => {
-
-    // Extraer el correo y la password electrónico del cuerpo de la solicitud
     const { email, password } = req.body;
-
-    // Comprobar si existe un usuario con el correo electrónico proporcionado
+  
+    // Comprobar si el usuario existe
     const usuario = await Veterinario.findOne({ email });
-
-    // Si no existe el usuario, devolver un error
     if (!usuario) {
-        const error = new Error('No existe el usuario.');
-        return res.status(403).json({ msg: error.message });
+      const error = new Error("El Usuario no existe");
+      return res.status(404).json({ msg: error.message });
     }
-
-    // Verificar si el usuario ha confirmado su correo electrónico
+    // Comprobar si el usuario esta confirmado
     if (!usuario.confirmado) {
-        const error = new Error('Falta confirmar el correo.');
-        return res.status(403).json({ msg: error.message });
+      const error = new Error("Tu Cuenta no ha sido confirmada");
+      return res.status(403).json({ msg: error.message });
     }
-
-    // Comprobar si la contraseña proporcionada coincide con la almacenada en la base de datos
+    // Revisar el password
     if (await usuario.comprobarPassword(password)) {
-        // Responder con un token JWT si la autenticación es exitosa
-        res.json({ token: generarJWT(usuario._id) });
+      // Autenticar
+      res.json({
+        _id: usuario._id,
+        nombre: usuario.nombre,
+        email: usuario.email,
+        token: generarJWT(usuario.id),
+      });
     } else {
-        // Si la contraseña es incorrecta, devolver un error
-        const error = new Error('Contraseña incorrecta.');
-        return res.status(403).json({ msg: error.message });
+      const error = new Error("El Password es incorrecto");
+      return res.status(403).json({ msg: error.message });
     }
-};
+  };
 
 
 // Definición de la función 'perfil', que maneja las solicitudes para la ruta '/perfil'
 const perfil = (req, res) => {
-    // Extraer el objeto cliente de la solicitud, que se ha agregado anteriormente mediante middleware
-    const { cliente } = req;
-    // Responder con el perfil del cliente en formato JSON
-    res.json({ perfil: cliente });
-};
-
+    const { veterinario } = req;
+    res.json(veterinario);
+  };
 
 // Definición de la función 'olvidePassword', que maneja las solicitudes para la ruta '/olvide-password'
 const olvidePassword = async (req, res) => {
+    
     const { email } = req.body;
 
     // Comprobar si existe un usuario con el correo electrónico proporcionado
@@ -129,6 +125,13 @@ const olvidePassword = async (req, res) => {
         existeUsuario.token = randomUUID();
         // Con 'await', la ejecución se bloquea hasta que se complete la operación de guardado
         await existeUsuario.save();
+
+        emailOlvidePassword({
+            email,
+            nombre:existeUsuario.nombre,
+            token: existeUsuario.token
+        });
+
         // Responder con un mensaje indicando que se ha enviado un correo con instrucciones
         res.json({ msg: "Hemos enviado un correo con las instrucciones." });
     } catch (error) {

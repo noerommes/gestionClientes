@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import Alerta from '../components/Alerta';
-import Axios from 'axios';
+import clienteAxios from '../config/axios';
 
 const Registrar = () => {
   // Estado para los campos del formulario
@@ -65,8 +65,7 @@ const Registrar = () => {
     }
 
     try {
-      const url = 'http://localhost:4000/api/veterinarios';
-      await Axios.post(url, {nombre, email, password});
+      await clienteAxios.post(`/veterinarios`, {nombre, email, password});
       setAlerta({
         msg: 'Creado correctamente, revisa tu email.',
         error: false
@@ -97,10 +96,7 @@ const Registrar = () => {
               onSubmit={handleSubmit}
             >
               {/* Mostrar alerta si existe */}
-              {msg && <Alerta
-                        alerta={alerta}
-                      />
-              }
+              
 
               {/* Campos del formulario */}
               <div className="mb-4">
@@ -147,10 +143,17 @@ const Registrar = () => {
                 />
               </div>
 
+              {msg && <Alerta
+                        alerta={alerta}
+                      />
+              }
+
               {/* Botón de envío */}
               <div className='flex flex-col items-center'>
                 <input type="submit" value="CREAR CUENTA" className='bg-indigo-700 w-full md:w-96 py-2 rounded-lg text-white hover:cursor-pointer hover:bg-indigo-800' />
               </div>
+
+              
             </form>
 
             {/* Enlaces de navegación */}

@@ -17,7 +17,7 @@ dotenv.config();
 // Llama a la función 'conectarDB' para establecer la conexión con la base de datos MongoDB
 conectarDB();
 
-const dominiosPermitidos = ['http://localhost:5173']
+const dominiosPermitidos = [process.env.FRONTEND_URL]
 
 const corsOption ={
     origin: function(origin, callback){
