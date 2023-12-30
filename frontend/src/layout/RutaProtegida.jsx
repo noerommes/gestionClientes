@@ -4,7 +4,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import useAuth from '../hooks/useAuth';
 
-const RutaProtegita = () => {
+const RutaProtegida = () => {
 
   const {auth, cargando} = useAuth();
   console.log(auth);
@@ -18,7 +18,11 @@ const RutaProtegita = () => {
       <>
           <main>
               <Header/>           
-              {auth?._id ? <Outlet /> : <Navigate to="/" />}
+              {auth?._id ? (
+                <main className='container mx-auto mt-20'>
+                  <Outlet />
+                </main>
+              ) : <Navigate to="/" />}
               <Footer/> 
           </main>
       </>
@@ -26,4 +30,4 @@ const RutaProtegita = () => {
 
 }
 
-export default RutaProtegita
+export default RutaProtegida

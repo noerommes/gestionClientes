@@ -52,13 +52,20 @@ const AuthProvider = ({ children }) => {
         autenticarUsuario()
     }, [])  // El segundo argumento [] indica que este efecto se ejecutará solo al montar el componente
 
+    const cerrarSesion = () => {
+        localStorage.removeItem('token');
+        setAuth({});
+        navigate('/');
+      }
+
     // Retornar el proveedor de contexto con el estado de autenticación y la función para actualizarlo
     return (
         <AuthContext.Provider
             value={{
                 auth,
                 setAuth,
-                cargando
+                cargando,
+                cerrarSesion
             }}
         >
             {children}

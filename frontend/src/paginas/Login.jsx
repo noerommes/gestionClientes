@@ -10,6 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [alerta, setAlerta] = useState({});
   const navigate = useNavigate();
+  
   const { setAuth } = useAuth(); // Obtén la función para actualizar el estado de autenticación
 
   const handleSubmit = async (e) => {
